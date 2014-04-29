@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Demishev on 29.04.14.
+ *  Created by Demishev on 29.04.14.
  */
 public class Main extends Application {
     public static final int SIZE = 200;
@@ -86,7 +86,7 @@ public class Main extends Application {
 
         result.getPoints().stream().filter(Point::isCaptured).forEach(p -> {
             int x = (int) ((p.getX() - xCenter + scale) * SIZE / scale / 2);
-            int y = (int) ((p.getY() - yCenter + scale) * SIZE / scale / 2);
+            int y = (int) (SIZE - (p.getY() - yCenter + scale) * SIZE / scale / 2);
             this.gc.fillOval(x, y, 1, 1);
         });
 
