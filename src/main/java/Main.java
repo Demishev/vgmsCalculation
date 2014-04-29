@@ -137,8 +137,10 @@ public class Main extends Application {
         HBox particleRadiusBox = new HBox(new Label("b: "), new SmallNumberHolder(0));
         HBox particleVolumeBox = new HBox(new Label("Vнф: "), new SmallNumberHolder(0));
         HBox ηBox = new HBox(new Label("η: "), new SmallNumberHolder(0));
+        HBox defaultZBox = new HBox(new Label("z: "), new SmallNumberHolder(0));
 
-        return new VBox(magnetisationBox, extFieldBox, χBox, ballRadiusBox, particleRadiusBox, particleVolumeBox, ηBox);
+
+        return new VBox(magnetisationBox, extFieldBox, χBox, ballRadiusBox, particleRadiusBox, particleVolumeBox, ηBox, defaultZBox);
     }
 
     class SmallNumberHolder extends TextField {
