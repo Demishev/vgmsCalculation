@@ -1,12 +1,14 @@
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -15,12 +17,16 @@ import model.CapturedArea;
 import model.Point;
 import model.RoundFunction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Created by konstantin on 29.04.14.
+ *  Created by Demishev on 29.04.14.
  */
 public class Main extends Application {
-
     public static final int SIZE = 200;
+    private GraphicsContext gc;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -30,46 +36,49 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Drawing Operations Test");
         Group root = new Group();
-        Canvas canvas = new Canvas(SIZE, SIZE);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
+        Canvas figureCanvas = new Canvas(SIZE, SIZE);
+        gc = figureCanvas.getGraphicsContext2D();
 
         Calculator calculator = new Calculator(SIZE / 2, new RoundFunction(8, 12, -48));
 
         CapturedArea result = calculator.calculate();
 
+        BorderPane mainPane = new BorderPane();
+        mainPane.setRight(figureCanvas);
+        mainPane.setCenter(displaySettings(result));
+        mainPane.setBottom(displayResults(result));
+        root.getChildren().add(mainPane);
 
-        drawShapes(gc, result);
-
-
-        BorderPane border = new BorderPane();
-        border.setRight(canvas);
-
-        VBox vbox = new VBox();
-        vbox.setPadding(new Insets(10));
-        vbox.setSpacing(8);
-
-        border.setCenter(vbox);
-        vbox.getChildren().add(new Label("I am the best VGMS application!"));
-        vbox.getChildren().add(new Label("Center is: (" + result.getxCenter() + "," + result.getyCenter() + ")"));
-        vbox.getChildren().add(new Label("Scale is: " + result.getScale()));
-        vbox.getChildren().add(new Button("Hello"));
-
-        root.getChildren().add(border);
-
-        root.minWidth(400);
-        root.minHeight(250);
-
+        drawFigure(result);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 
-    private void drawShapes(GraphicsContext gc, CapturedArea result) {
+    private Node displayResults(CapturedArea result) {
+        FlowPane flowPane = new FlowPane();
 
+        List<Node> results = new ArrayList<>();
+        results.add(new Label("I am the best VGMS application!"));
+        results.add(new Label("Center is: (" + result.getxCenter() + "," + result.getyCenter() + ")"));
+        results.add(new Label("Scale is: " + result.getScale()));
 
-        gc.setFill(Color.GREEN);
-        gc.setStroke(Color.BLUE);
-        gc.setLineWidth(1);
+        flowPane.getChildren().addAll(results);
+
+        return flowPane;
+    }
+
+    private VBox displaySettings(CapturedArea result) {
+        VBox vbox = new VBox();
+        vbox.setPadding(new Insets(10));
+        vbox.setSpacing(8);
+
+        vbox.getChildren().add(new Button("Hello"));
+
+        return vbox;
+    }
+
+    private void drawFigure(CapturedArea result) {
+        this.gc.setFill(Color.GREEN);
 
         final double scale = result.getScale();
         final double xCenter = result.getxCenter();
@@ -78,14 +87,9 @@ public class Main extends Application {
         result.getPoints().stream().filter(Point::isCaptured).forEach(p -> {
             int x = (int) ((p.getX() - xCenter + scale) * SIZE / scale / 2);
             int y = (int) ((p.getY() - yCenter + scale) * SIZE / scale / 2);
-            gc.fillOval(x, y, 1, 1);
+            this.gc.fillOval(x, y, 1, 1);
         });
 
-        gc.setFill(Color.BLUE);
-
-
-        gc.fillOval(0, 0, 10, 10);
-
-
+        this.gc.setFill(Color.BLUE);
     }
 }
