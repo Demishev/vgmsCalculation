@@ -45,7 +45,7 @@ public class Main extends Application {
 
         BorderPane mainPane = new BorderPane();
         mainPane.setRight(figureCanvas);
-        mainPane.setCenter(displaySettings(result));
+        mainPane.setCenter(displaySettings());
         mainPane.setBottom(displayResults(result));
         root.getChildren().add(mainPane);
 
@@ -67,7 +67,7 @@ public class Main extends Application {
         return flowPane;
     }
 
-    private VBox displaySettings(CapturedArea result) {
+    private VBox displaySettings() {
         VBox vbox = new VBox();
         vbox.setPadding(new Insets(10));
         vbox.setSpacing(8);
