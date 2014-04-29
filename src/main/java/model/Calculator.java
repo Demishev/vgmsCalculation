@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by Demishev on 29.04.14.
+ *  Created by Demishev on 29.04.14.
  */
 public class Calculator {
+    public static final int SEARCH_RANGE = 1000;
+    public static final double SMALLEST_RANGE = 10E-5;
     private final int resolution;
     private final Function function;
-    private double scale = 0.000_000_1;
-    private double xCenter = 0;
-    private double yCenter = 0;
+
     private Random random = new Random();
 
     public Calculator(int resolution, Function function) {
@@ -21,12 +21,18 @@ public class Calculator {
     }
 
     public CapturedArea calculate() {
+        double xCenter = 0;
+        double yCenter = 0;
+        double scale = SMALLEST_RANGE;
+
+
         while (!function.isCaptured(xCenter, yCenter)) {
-            xCenter = (random.nextDouble() - 0.5) * 1000;
-            yCenter = (random.nextDouble() - 0.5) * 1000;
+            xCenter = (random.nextDouble() - 0.5) * SEARCH_RANGE;
+            yCenter = (random.nextDouble() - 0.5) * SEARCH_RANGE;
         }
 
-        while (isCapturedOnBound()) {
+
+        while (isCapturedOnBound(scale, xCenter, yCenter)) {
             scale *= 2;
         }
 
@@ -43,7 +49,7 @@ public class Calculator {
         return new CapturedArea(points, xCenter, yCenter, scale);
     }
 
-    private boolean isCapturedOnBound() {
+    private boolean isCapturedOnBound(double scale, double xCenter, double yCenter) {
         for (int i = 0; i < 100; i++) {
             double delta = random.nextDouble() + scale;
             if (function.isCaptured(xCenter - scale, yCenter - scale + delta)) {
