@@ -66,11 +66,9 @@ public class Main extends Application {
     }
 
     private Node getSingleParticleField(Canvas singleParticleCanvas) {
-        HBox xHBox = new HBox(new Label("x: "), new TextField("0"));
-        HBox yHBox = new HBox(new Label("y: "), new TextField("0"));
-        HBox zHBox = new HBox(new Label("z: "), new TextField("0"));
+        HBox startPosition = new HBox(new Label("Start: ("), new SmallNumberHolder(0), new Label(","), new SmallNumberHolder(0), new Label(","), new SmallNumberHolder(0), new Label(")"));
 
-        return new VBox(singleParticleCanvas, new Label("Separate part calculator:"), xHBox, yHBox, zHBox, new Button("Calculate"));
+        return new VBox(singleParticleCanvas, startPosition, new Button("Calculate"));
     }
 
     private Node displayResults(CapturedArea result) {
@@ -89,7 +87,7 @@ public class Main extends Application {
     private VBox displaySettings() {
         VBox vbox = new VBox();
 
-        vbox.getChildren().add(new Button("Hello"));
+        vbox.getChildren().addAll(systemParams(), new Button("Hello"));
 
         return vbox;
     }
@@ -129,5 +127,38 @@ public class Main extends Application {
 
         capturedAreaGraphicsContext.fillText(String.format("%.2f", result.getyCenter() - result.getScale()), 5, SIZE - 20);
         capturedAreaGraphicsContext.fillText(String.format("%.2f", result.getyCenter() + result.getScale()), 5, 15);
+    }
+
+    private Node systemParams() {
+        HBox magnetisationBox = new HBox(new Label("M: ("), new SmallNumberHolder(0), new Label(","), new SmallNumberHolder(0), new Label(","), new SmallNumberHolder(0), new Label(")"));
+        HBox extFieldBox = new HBox(new Label("H: ("), new SmallNumberHolder(0), new Label(","), new SmallNumberHolder(0), new Label(","), new SmallNumberHolder(0), new Label(")"));
+        HBox χBox = new HBox(new Label("χ: "), new SmallNumberHolder(0));
+        HBox ballRadiusBox = new HBox(new Label("a: "), new SmallNumberHolder(0));
+        HBox particleRadiusBox = new HBox(new Label("b: "), new SmallNumberHolder(0));
+        HBox particleVolumeBox = new HBox(new Label("Vнф: "), new SmallNumberHolder(0));
+        HBox ηBox = new HBox(new Label("η: "), new SmallNumberHolder(0));
+
+        return new VBox(magnetisationBox, extFieldBox, χBox, ballRadiusBox, particleRadiusBox, particleVolumeBox, ηBox);
+    }
+
+    class SmallNumberHolder extends TextField {
+        SmallNumberHolder(double defaultValue) {
+            super(String.format("%.2f", defaultValue));
+
+            setMaxWidth(55);
+
+            setOnKeyReleased(event -> {
+                try {
+                    Double.valueOf(getText());
+                    setStyle("-fx-background-color: white");
+                } catch (NumberFormatException e) {
+                    setStyle("-fx-background-color: red");
+                }
+            });
+        }
+
+        double getValue() {
+            return Double.valueOf(getText());
+        }
     }
 }
