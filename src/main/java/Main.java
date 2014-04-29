@@ -1,5 +1,4 @@
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -7,8 +6,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -25,7 +26,8 @@ import java.util.List;
  */
 public class Main extends Application {
     public static final int SIZE = 200;
-    private GraphicsContext gc;
+    private GraphicsContext capturedAreaGraphicsContext;
+    private GraphicsContext singleParticleGraphicsContext;
 
 
     public static void main(String[] args) {
@@ -37,14 +39,23 @@ public class Main extends Application {
         primaryStage.setTitle("Drawing Operations Test");
         Group root = new Group();
         Canvas figureCanvas = new Canvas(SIZE, SIZE);
-        gc = figureCanvas.getGraphicsContext2D();
+        capturedAreaGraphicsContext = figureCanvas.getGraphicsContext2D();
+
+        Canvas singleParticleCanvas = new Canvas(SIZE, SIZE);
+        singleParticleGraphicsContext = singleParticleCanvas.getGraphicsContext2D();
 
         Calculator calculator = new Calculator(SIZE / 2, new RoundFunction(8, 12, -48));
 
         CapturedArea result = calculator.calculate();
 
         BorderPane mainPane = new BorderPane();
-        mainPane.setRight(figureCanvas);
+
+        HBox paintBox = new HBox();
+        paintBox.getChildren().add(figureCanvas);
+
+        paintBox.getChildren().add(getSingleParticleField(singleParticleCanvas));
+
+        mainPane.setRight(paintBox);
         mainPane.setCenter(displaySettings());
         mainPane.setBottom(displayResults(result));
         root.getChildren().add(mainPane);
@@ -52,6 +63,14 @@ public class Main extends Application {
         drawFigure(result);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+    }
+
+    private Node getSingleParticleField(Canvas singleParticleCanvas) {
+        HBox xHBox = new HBox(new Label("x: "), new TextField("0"));
+        HBox yHBox = new HBox(new Label("y: "), new TextField("0"));
+        HBox zHBox = new HBox(new Label("z: "), new TextField("0"));
+
+        return new VBox(singleParticleCanvas, new Label("Separate part calculator:"), xHBox, yHBox, zHBox, new Button("Calculate"));
     }
 
     private Node displayResults(CapturedArea result) {
@@ -69,8 +88,6 @@ public class Main extends Application {
 
     private VBox displaySettings() {
         VBox vbox = new VBox();
-        vbox.setPadding(new Insets(10));
-        vbox.setSpacing(8);
 
         vbox.getChildren().add(new Button("Hello"));
 
@@ -78,7 +95,7 @@ public class Main extends Application {
     }
 
     private void drawFigure(CapturedArea result) {
-        this.gc.setFill(Color.GREEN);
+        this.capturedAreaGraphicsContext.setFill(Color.GREEN);
 
         final double scale = result.getScale();
         final double xCenter = result.getxCenter();
@@ -87,30 +104,30 @@ public class Main extends Application {
         result.getPoints().stream().filter(Point::isCaptured).forEach(p -> {
             int x = (int) ((p.getX() - xCenter + scale) * SIZE / scale / 2);
             int y = (int) (SIZE - (p.getY() - yCenter + scale) * SIZE / scale / 2);
-            this.gc.fillOval(x, y, 1, 1);
+            this.capturedAreaGraphicsContext.fillOval(x, y, 1, 1);
         });
 
         drawXScale(result);
     }
 
     private void drawXScale(CapturedArea result) {
-        gc.setFill(Color.BLACK);
+        capturedAreaGraphicsContext.setFill(Color.BLACK);
 
         int xScaleTop = SIZE - 15;
-        gc.strokeLine(0, xScaleTop, SIZE - 5, xScaleTop);
+        capturedAreaGraphicsContext.strokeLine(0, xScaleTop, SIZE - 5, xScaleTop);
 
-        gc.strokeLine(SIZE - 5, xScaleTop, SIZE - 10, xScaleTop - 5);
-        gc.strokeLine(SIZE - 5, xScaleTop, SIZE - 10, xScaleTop + 5);
+        capturedAreaGraphicsContext.strokeLine(SIZE - 5, xScaleTop, SIZE - 10, xScaleTop - 5);
+        capturedAreaGraphicsContext.strokeLine(SIZE - 5, xScaleTop, SIZE - 10, xScaleTop + 5);
 
-        gc.fillText(String.format("%.2f", result.getxCenter() - result.getScale()), 10, xScaleTop + 13);
-        gc.fillText(String.format("%.2f", result.getxCenter() + result.getScale()), SIZE - 30, xScaleTop + 13);
+        capturedAreaGraphicsContext.fillText(String.format("%.2f", result.getxCenter() - result.getScale()), 10, xScaleTop + 13);
+        capturedAreaGraphicsContext.fillText(String.format("%.2f", result.getxCenter() + result.getScale()), SIZE - 30, xScaleTop + 13);
 
 
-        gc.strokeLine(5, 0, 5, SIZE);
-        gc.strokeLine(5, 0, 0, 5);
-        gc.strokeLine(5, 0, 10, 5);
+        capturedAreaGraphicsContext.strokeLine(5, 0, 5, SIZE);
+        capturedAreaGraphicsContext.strokeLine(5, 0, 0, 5);
+        capturedAreaGraphicsContext.strokeLine(5, 0, 10, 5);
 
-        gc.fillText(String.format("%.2f", result.getyCenter() - result.getScale()), 5, SIZE - 20);
-        gc.fillText(String.format("%.2f", result.getyCenter() + result.getScale()), 5, 15);
+        capturedAreaGraphicsContext.fillText(String.format("%.2f", result.getyCenter() - result.getScale()), 5, SIZE - 20);
+        capturedAreaGraphicsContext.fillText(String.format("%.2f", result.getyCenter() + result.getScale()), 5, 15);
     }
 }
