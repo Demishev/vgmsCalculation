@@ -32,6 +32,7 @@ public class Calculator {
 
         List<Point> points = new ArrayList<Point>(resolution * resolution);
 
+
         for (int i = 0; i < resolution * resolution * 25; i++) {
             double currentX = xCenter + 2 * scale * (random.nextDouble() - 0.5);
             double currentY = yCenter + 2 * scale * (random.nextDouble() - 0.5);
