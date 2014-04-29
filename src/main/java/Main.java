@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *  Created by Demishev on 29.04.14.
+ * Created by Demishev on 29.04.14.
  */
 public class Main extends Application {
     public static final int SIZE = 200;
@@ -90,6 +90,27 @@ public class Main extends Application {
             this.gc.fillOval(x, y, 1, 1);
         });
 
-        this.gc.setFill(Color.BLUE);
+        drawXScale(result);
+    }
+
+    private void drawXScale(CapturedArea result) {
+        gc.setFill(Color.BLACK);
+
+        int xScaleTop = SIZE - 15;
+        gc.strokeLine(0, xScaleTop, SIZE - 5, xScaleTop);
+
+        gc.strokeLine(SIZE - 5, xScaleTop, SIZE - 10, xScaleTop - 5);
+        gc.strokeLine(SIZE - 5, xScaleTop, SIZE - 10, xScaleTop + 5);
+
+        gc.fillText(String.format("%.2f", result.getxCenter() - result.getScale()), 10, xScaleTop + 13);
+        gc.fillText(String.format("%.2f", result.getxCenter() + result.getScale()), SIZE - 30, xScaleTop + 13);
+
+
+        gc.strokeLine(5, 0, 5, SIZE);
+        gc.strokeLine(5, 0, 0, 5);
+        gc.strokeLine(5, 0, 10, 5);
+
+        gc.fillText(String.format("%.2f", result.getyCenter() - result.getScale()), 5, SIZE - 20);
+        gc.fillText(String.format("%.2f", result.getyCenter() + result.getScale()), 5, 15);
     }
 }
