@@ -21,7 +21,7 @@ public class RoundFunction implements Function {
     }
 
     @Override
-    public boolean isCaptured(double x, double y) {
+    public boolean isCaptured(double x, double y, double z) {
         return Math.pow(x - xCenter, 2) + Math.pow(y - yCenter, 2) < Math.pow(radius, 2);
     }
 }
