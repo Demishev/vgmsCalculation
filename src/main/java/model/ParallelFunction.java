@@ -64,6 +64,11 @@ public class ParallelFunction implements Function {
         return particleInBall(x, y, z);
     }
 
+    @Override
+    public Point getNextPoint(double x, double y, double z) {
+        return null; //TODO code it
+    }
+
     private double vectorPower(double x, double y, double z, int power) {
         return Math.pow(x, power) * Math.pow(y, power) * Math.pow(z, power);
     }

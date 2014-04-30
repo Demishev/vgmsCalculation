@@ -3,8 +3,7 @@ package model;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class RoundFunctionTest {
     private RoundFunction roundFunction;
@@ -42,5 +41,21 @@ public class RoundFunctionTest {
     @Test
     public void ShouldTrueWhenX5Y5Radius10() throws Exception {
         assertTrue(new RoundFunction(10).isCaptured(5, 5, 0));
+    }
+
+    @Test
+    public void shouldNextPointWithSameXAndY() throws Exception {
+        assertEquals(1, roundFunction.getNextPoint(1, 2, 3).getX(), 0.0001);
+        assertEquals(2, roundFunction.getNextPoint(1, 2, 3).getY(), 0.0001);
+    }
+
+    @Test
+    public void shouldZBeMinus9_9WhenItWas10() throws Exception {
+        assertEquals(-9.9, roundFunction.getNextPoint(1, 2, -10).getZ(), 0.0001);
+    }
+
+    @Test
+    public void shouldZBeMinus4_9WhenItWas5() throws Exception {
+        assertEquals(-4.9, roundFunction.getNextPoint(1, 2, -5).getZ(), 0.0001);
     }
 }
