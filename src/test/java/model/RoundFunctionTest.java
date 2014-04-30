@@ -58,4 +58,14 @@ public class RoundFunctionTest {
     public void shouldZBeMinus4_9WhenItWas5() throws Exception {
         assertEquals(-4.9, roundFunction.getNextPoint(1, 2, -5).getZ(), 0.0001);
     }
+
+    @Test
+    public void shouldTrueWhenCanGoOnZIsMinus1() throws Exception {
+        assertTrue(roundFunction.canGoOn(1, 2, -1));
+    }
+
+    @Test
+    public void shouldFalseWhenCanGoOnZIs1() throws Exception {
+        assertFalse(roundFunction.canGoOn(1, 2, 1));
+    }
 }

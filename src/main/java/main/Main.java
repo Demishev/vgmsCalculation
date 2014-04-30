@@ -17,9 +17,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *  Created by Demishev on 29.04.14.
  */
@@ -35,6 +32,9 @@ public class Main extends Application {
     private final SmallNumberHolder ηHolder = new SmallNumberHolder(1);
     private final SmallNumberHolder liquidVelocityHolder = new SmallNumberHolder(1);
     private final SmallNumberHolder zHolder = new SmallNumberHolder(-8);
+    private final SmallNumberHolder particleXHolder = new SmallNumberHolder(0);
+    private final SmallNumberHolder particleYHolder = new SmallNumberHolder(0);
+    private final SmallNumberHolder particleZHolder = new SmallNumberHolder(0);
     private SmallNumberHolder mXHolder = new SmallNumberHolder(1);
     private SmallNumberHolder mYHolder = new SmallNumberHolder(1);
     private SmallNumberHolder mZHolder = new SmallNumberHolder(1);
@@ -58,7 +58,7 @@ public class Main extends Application {
 
         Calculator calculator = new Calculator(SIZE / 2, new RoundFunction(8, 12, -48));
 
-        CapturedArea result = calculator.calculate(0);
+        ResultSet result = calculator.calculate(0);
 
         BorderPane mainPane = new BorderPane();
 
@@ -78,20 +78,29 @@ public class Main extends Application {
     }
 
     private Node getSingleParticleField(Canvas singleParticleCanvas) {
-        HBox startPosition = new HBox(new Label("Start: ("), new SmallNumberHolder(0), new Label(","), new SmallNumberHolder(0), new Label(","), new SmallNumberHolder(0), new Label(")"));
+        HBox startPosition = new HBox(new Label("Start: ("), particleXHolder, new Label(","), particleYHolder, new Label(","), particleZHolder, new Label(")"));
 
-        return new VBox(singleParticleCanvas, startPosition, new Button("Calculate"));
+        Button calculateButton = new Button("Calculate");
+
+        calculateButton.setOnMouseClicked(event -> {
+            final double ballRadius = bHolder.getValue();
+
+            Calculator calculator = new Calculator(new RoundFunction(10));
+
+            ResultSet result = calculator.getTrajectory(particleXHolder.getValue(), particleYHolder.getValue(), particleZHolder.getValue());
+
+            //Draw an axis
+            //Draw a traectory
+        });
+
+        return new VBox(singleParticleCanvas, startPosition, calculateButton);
     }
 
-    private Node displayResults(CapturedArea result) {
+    private Node displayResults(ResultSet result) {
         FlowPane flowPane = new FlowPane();
 
-        List<Node> results = new ArrayList<>();
-        results.add(new Label("I am the best VGMS application!"));
-        results.add(new Label("Center is: (" + result.getxCenter() + "," + result.getyCenter() + ")"));
-        results.add(new Label("Scale is: " + result.getScale()));
-
-        flowPane.getChildren().addAll(results);
+        flowPane.getChildren().addAll(new Label("Center is: (" + result.getxCenter() + "," + result.getyCenter() + ")"),
+                new Label("Scale is: " + result.getScale()));
 
         return flowPane;
     }
@@ -121,7 +130,7 @@ public class Main extends Application {
 
 
                 Calculator calculator = new Calculator(20, new ParallelFunction(χ, η, a, b, mX, mY, mZ, hX, hY, hZ, particleVolume, liquidVelocity));
-                CapturedArea result = calculator.calculate(zHolder.getValue());
+                ResultSet result = calculator.calculate(zHolder.getValue());
 
                 capturedAreaGraphicsContext.restore();
 
@@ -137,7 +146,7 @@ public class Main extends Application {
         return vbox;
     }
 
-    private void drawFigure(CapturedArea result) {
+    private void drawFigure(ResultSet result) {
         this.capturedAreaGraphicsContext.setFill(Color.GREEN);
 
         final double scale = result.getScale();
@@ -153,7 +162,7 @@ public class Main extends Application {
         drawXScale(result);
     }
 
-    private void drawXScale(CapturedArea result) {
+    private void drawXScale(ResultSet result) {
         capturedAreaGraphicsContext.setFill(Color.BLACK);
 
         int xScaleTop = SIZE - 15;

@@ -10,7 +10,7 @@ import java.util.Random;
 public class Calculator {
     public static final int SEARCH_RANGE = 1000;
     public static final double SMALLEST_RANGE = 10E-5;
-    public static final int INTITERATIONS = 25;
+    public static final int DEFAULT_RESOLUTION = 25;
     private final int resolution;
     private final Function function;
 
@@ -21,7 +21,13 @@ public class Calculator {
         this.function = function;
     }
 
-    public CapturedArea calculate(double initialZ) {
+    public Calculator(Function function) {
+        this.function = function;
+
+        resolution = DEFAULT_RESOLUTION;
+    }
+
+    public ResultSet calculate(double initialZ) {
         double xCenter = 0;
         double yCenter = 0;
         double scale = SMALLEST_RANGE;
@@ -40,7 +46,7 @@ public class Calculator {
         List<Point> points = new ArrayList<Point>(resolution * resolution);
 
 
-        for (int i = 0; i < resolution * resolution * INTITERATIONS; i++) {
+        for (int i = 0; i < resolution * resolution * DEFAULT_RESOLUTION; i++) {
             double currentX = xCenter + 2 * scale * (random.nextDouble() - 0.5);
             double currentY = yCenter + 2 * scale * (random.nextDouble() - 0.5);
 
@@ -48,11 +54,11 @@ public class Calculator {
 
         }
 
-        return new CapturedArea(points, xCenter, yCenter, scale);
+        return new ResultSet(points, xCenter, yCenter, scale);
     }
 
     private boolean isCapturedOnBound(double scale, double xCenter, double yCenter, double initialZ) {
-        for (int i = 0; i < INTITERATIONS; i++) {
+        for (int i = 0; i < DEFAULT_RESOLUTION; i++) {
             double delta = random.nextDouble() + scale;
             if (function.isCaptured(xCenter - scale, yCenter - scale + delta, initialZ)) {
                 return true;
@@ -70,4 +76,36 @@ public class Calculator {
         return false;
     }
 
+    public ResultSet getTrajectory(double startX, double startY, double startZ) {
+        List<Point> points = new ArrayList<>();
+
+        Point currentPoint = new Point(startX, startY, startZ);
+        points.add(currentPoint);
+
+        double minX = startX;
+        double maxX = startX;
+
+        double minZ = startZ;
+        double maxZ = startZ;
+
+        while (function.canGoOn(currentPoint.getX(), currentPoint.getY(), currentPoint.getZ())) {
+            currentPoint = function.getNextPoint(currentPoint.getX(), currentPoint.getY(), currentPoint.getZ());
+            points.add(currentPoint);
+
+            if (currentPoint.getX() < minX) {
+                minX = currentPoint.getX();
+            }
+            if (currentPoint.getX() > maxX) {
+                maxX = currentPoint.getX();
+            }
+            if (currentPoint.getZ() < minZ) {
+                minZ = currentPoint.getZ();
+            }
+            if (currentPoint.getZ() > maxZ) {
+                maxZ = currentPoint.getZ();
+            }
+        }
+
+        return new ResultSet(points, minX, maxX, minZ, maxZ);
+    }
 }

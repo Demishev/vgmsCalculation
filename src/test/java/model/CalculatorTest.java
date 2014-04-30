@@ -15,7 +15,7 @@ public class CalculatorTest {
 
     @Test
     public void should10000PointsWhenGetPicture() throws Exception {
-        CapturedArea result = calculator.calculate(0);
+        ResultSet result = calculator.calculate(0);
 
         assert result.getPoints().stream().filter(p -> p.getX() > result.getScale()).count() == 0;
         assert result.getPoints().stream().filter(p -> p.getX() < -result.getScale()).count() == 0;

@@ -69,6 +69,11 @@ public class ParallelFunction implements Function {
         return null; //TODO code it
     }
 
+    @Override
+    public boolean canGoOn(double x, double y, double z) {
+        return false; //TODO code this!
+    }
+
     private double vectorPower(double x, double y, double z, int power) {
         return Math.pow(x, power) * Math.pow(y, power) * Math.pow(z, power);
     }

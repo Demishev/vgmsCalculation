@@ -29,4 +29,9 @@ public class RoundFunction implements Function {
     public Point getNextPoint(double x, double y, double z) {
         return new Point(x, y, z + 0.1);
     }
+
+    @Override
+    public boolean canGoOn(double x, double y, double z) {
+        return z < 0;
+    }
 }
