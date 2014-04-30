@@ -3,7 +3,7 @@ package model;
 import java.util.List;
 
 /**
- * Created by Demishev on 29.04.14.
+ *  Created by Demishev on 29.04.14.
  */
 public class CapturedArea {
     private final List<Point> points;

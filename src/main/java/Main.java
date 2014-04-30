@@ -13,10 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.Calculator;
-import model.CapturedArea;
-import model.Point;
-import model.RoundFunction;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +23,19 @@ import java.util.List;
  */
 public class Main extends Application {
     public static final int SIZE = 200;
+    private final SmallNumberHolder hXHolder = new SmallNumberHolder(0);
+    private final SmallNumberHolder hYHolder = new SmallNumberHolder(0);
+    private final SmallNumberHolder hZHolder = new SmallNumberHolder(1);
+    private final SmallNumberHolder χHolder = new SmallNumberHolder(1);
+    private final SmallNumberHolder aHolder = new SmallNumberHolder(1);
+    private final SmallNumberHolder bHolder = new SmallNumberHolder(0.1);
+    private final SmallNumberHolder particleVolumeHolder = new SmallNumberHolder(0.01);
+    private final SmallNumberHolder ηHolder = new SmallNumberHolder(1);
+    private final SmallNumberHolder liquidVelocityHolder = new SmallNumberHolder(1);
+    private final SmallNumberHolder zHolder = new SmallNumberHolder(-8);
+    private SmallNumberHolder mXHolder = new SmallNumberHolder(1);
+    private SmallNumberHolder mYHolder = new SmallNumberHolder(1);
+    private SmallNumberHolder mZHolder = new SmallNumberHolder(1);
     private GraphicsContext capturedAreaGraphicsContext;
     private GraphicsContext singleParticleGraphicsContext;
 
@@ -46,7 +56,7 @@ public class Main extends Application {
 
         Calculator calculator = new Calculator(SIZE / 2, new RoundFunction(8, 12, -48));
 
-        CapturedArea result = calculator.calculate();
+        CapturedArea result = calculator.calculate(0);
 
         BorderPane mainPane = new BorderPane();
 
@@ -87,7 +97,40 @@ public class Main extends Application {
     private VBox displaySettings() {
         VBox vbox = new VBox();
 
-        vbox.getChildren().addAll(systemParams(), new Button("Hello"));
+        Button startButton = new Button("Start");
+
+        startButton.setOnMouseClicked(event -> {
+            try {
+                final double χ = χHolder.getValue();
+                final double η = ηHolder.getValue();
+                final double a = aHolder.getValue();
+                final double b = bHolder.getValue();
+
+                final double mX = mXHolder.getValue();
+                final double mY = mYHolder.getValue();
+                final double mZ = mZHolder.getValue();
+
+                final double hX = hXHolder.getValue();
+                final double hY = hYHolder.getValue();
+                final double hZ = hZHolder.getValue();
+
+                final double particleVolume = particleVolumeHolder.getValue();
+                final double liquidVelocity = liquidVelocityHolder.getValue();
+
+
+                Calculator calculator = new Calculator(20, new ParallelFunction(χ, η, a, b, mX, mY, mZ, hX, hY, hZ, particleVolume, liquidVelocity));
+                CapturedArea result = calculator.calculate(zHolder.getValue());
+
+                capturedAreaGraphicsContext.restore();
+
+                drawFigure(result);
+
+            } catch (Exception ignored) {
+
+            }
+        });
+
+        vbox.getChildren().addAll(systemParams(), startButton);
 
         return vbox;
     }
@@ -130,17 +173,18 @@ public class Main extends Application {
     }
 
     private Node systemParams() {
-        HBox magnetisationBox = new HBox(new Label("M: ("), new SmallNumberHolder(0), new Label(","), new SmallNumberHolder(0), new Label(","), new SmallNumberHolder(0), new Label(")"));
-        HBox extFieldBox = new HBox(new Label("H: ("), new SmallNumberHolder(0), new Label(","), new SmallNumberHolder(0), new Label(","), new SmallNumberHolder(0), new Label(")"));
-        HBox χBox = new HBox(new Label("χ: "), new SmallNumberHolder(0));
-        HBox ballRadiusBox = new HBox(new Label("a: "), new SmallNumberHolder(0));
-        HBox particleRadiusBox = new HBox(new Label("b: "), new SmallNumberHolder(0));
-        HBox particleVolumeBox = new HBox(new Label("Vнф: "), new SmallNumberHolder(0));
-        HBox ηBox = new HBox(new Label("η: "), new SmallNumberHolder(0));
-        HBox defaultZBox = new HBox(new Label("z: "), new SmallNumberHolder(0));
+        HBox magnetisationBox = new HBox(new Label("M: ("), mXHolder, new Label(","), mYHolder, new Label(","), mZHolder, new Label(")"));
+        HBox extFieldBox = new HBox(new Label("H: ("), hXHolder, new Label(","), hYHolder, new Label(","), hZHolder, new Label(")"));
+        HBox χBox = new HBox(new Label("χ: "), χHolder);
+        HBox ballRadiusBox = new HBox(new Label("a: "), aHolder);
+        HBox particleRadiusBox = new HBox(new Label("b: "), bHolder);
+        HBox particleVolumeBox = new HBox(new Label("Vнф: "), particleVolumeHolder);
+        HBox ηBox = new HBox(new Label("η: "), ηHolder);
+        HBox liquidVelocityBox = new HBox(new Label("V0: ", liquidVelocityHolder));
+        HBox defaultZBox = new HBox(new Label("z: "), zHolder);
 
 
-        return new VBox(magnetisationBox, extFieldBox, χBox, ballRadiusBox, particleRadiusBox, particleVolumeBox, ηBox, defaultZBox);
+        return new VBox(magnetisationBox, extFieldBox, χBox, ballRadiusBox, particleRadiusBox, particleVolumeBox, ηBox, liquidVelocityBox, defaultZBox);
     }
 
     class SmallNumberHolder extends TextField {
@@ -152,7 +196,7 @@ public class Main extends Application {
             setOnKeyReleased(event -> {
                 try {
                     Double.valueOf(getText());
-                    setStyle("-fx-background-color: white");
+                    setStyle("-fx-background-color: beige");
                 } catch (NumberFormatException e) {
                     setStyle("-fx-background-color: red");
                 }

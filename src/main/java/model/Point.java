@@ -1,7 +1,7 @@
 package model;
 
 /**
- * Created by Demishev on 29.04.14.
+ *  Created by Demishev on 29.04.14.
  */
 public class Point {
     private final double x;
