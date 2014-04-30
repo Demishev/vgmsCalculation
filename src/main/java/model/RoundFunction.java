@@ -27,7 +27,7 @@ public class RoundFunction implements Function {
 
     @Override
     public Point getNextPoint(double x, double y, double z) {
-        return new Point(x, y, z + 0.1);
+        return new Point(x * 0.99, y * 0.99, z + 0.1);
     }
 
     @Override

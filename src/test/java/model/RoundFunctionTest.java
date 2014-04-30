@@ -44,9 +44,9 @@ public class RoundFunctionTest {
     }
 
     @Test
-    public void shouldNextPointWithSameXAndY() throws Exception {
-        assertEquals(1, roundFunction.getNextPoint(1, 2, 3).getX(), 0.0001);
-        assertEquals(2, roundFunction.getNextPoint(1, 2, 3).getY(), 0.0001);
+    public void shouldNextPointWithSameXAndYButMinusPersent() throws Exception {
+        assertEquals(99, roundFunction.getNextPoint(100, 2, 3).getX(), 0.0001);
+        assertEquals(198, roundFunction.getNextPoint(1, 200, 3).getY(), 0.0001);
     }
 
     @Test

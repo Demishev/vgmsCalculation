@@ -89,8 +89,14 @@ public class Main extends Application {
 
             ResultSet result = calculator.getTrajectory(particleXHolder.getValue(), particleYHolder.getValue(), particleZHolder.getValue());
 
-            //Draw an axis
-            //Draw a traectory
+            final double horizontalScale = SIZE / (result.getMaxX() - result.getMinX());
+            final double verticalScale = SIZE / (result.getMaxZ() - result.getMinZ());
+
+            final double horizontalDelta = -result.getMinX();
+            final double verticalDelta = -result.getMinZ();
+
+            singleParticleGraphicsContext.setFill(Color.GREEN);
+            singleParticleGraphicsContext.strokeOval(horizontalDelta + horizontalScale, 0, horizontalScale * ballRadius, verticalScale * ballRadius);
         });
 
         return new VBox(singleParticleCanvas, startPosition, calculateButton);
