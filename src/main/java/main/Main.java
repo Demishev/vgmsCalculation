@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 import model.*;
 
 /**
- *  Created by Demishev on 29.04.14.
+ * Created by Demishev on 29.04.14.
  */
 public class Main extends Application {
     public static final int SIZE = 200;
@@ -32,15 +32,14 @@ public class Main extends Application {
     private final SmallNumberHolder ηHolder = new SmallNumberHolder(1);
     private final SmallNumberHolder liquidVelocityHolder = new SmallNumberHolder(1);
     private final SmallNumberHolder zHolder = new SmallNumberHolder(-8);
-    private final SmallNumberHolder particleXHolder = new SmallNumberHolder(0);
-    private final SmallNumberHolder particleYHolder = new SmallNumberHolder(0);
-    private final SmallNumberHolder particleZHolder = new SmallNumberHolder(0);
+    private final SmallNumberHolder particleXHolder = new SmallNumberHolder(5);
+    private final SmallNumberHolder particleYHolder = new SmallNumberHolder(10);
+    private final SmallNumberHolder particleZHolder = new SmallNumberHolder(-8);
     private SmallNumberHolder mXHolder = new SmallNumberHolder(1);
     private SmallNumberHolder mYHolder = new SmallNumberHolder(1);
     private SmallNumberHolder mZHolder = new SmallNumberHolder(1);
     private GraphicsContext capturedAreaGraphicsContext;
     private GraphicsContext singleParticleGraphicsContext;
-
 
     public static void main(String[] args) {
         launch(args);
@@ -89,14 +88,16 @@ public class Main extends Application {
 
             ResultSet result = calculator.getTrajectory(particleXHolder.getValue(), particleYHolder.getValue(), particleZHolder.getValue());
 
-            final double horizontalScale = SIZE / (result.getMaxX() - result.getMinX());
-            final double verticalScale = SIZE / (result.getMaxZ() - result.getMinZ());
+            final double horizontalScale = SIZE / (result.getMaxX() - result.getMinX()) / 1.5;
+            final double verticalScale = SIZE / (result.getMaxZ() - result.getMinZ()) / 1.5;
 
-            final double horizontalDelta = -result.getMinX();
-            final double verticalDelta = -result.getMinZ();
+            final double horizontalDelta = -result.getMinX() * horizontalScale + 100 * 1.5;
+            final double verticalDelta = -result.getMaxZ() * verticalScale + 15 * 1.5;
 
             singleParticleGraphicsContext.setFill(Color.GREEN);
-            singleParticleGraphicsContext.strokeOval(horizontalDelta + horizontalScale, 0, horizontalScale * ballRadius, verticalScale * ballRadius);
+            singleParticleGraphicsContext.strokeOval(horizontalDelta, -5 * verticalScale - verticalDelta, horizontalScale * ballRadius, verticalScale * ballRadius);
+
+            System.out.println("Bla");
         });
 
         return new VBox(singleParticleCanvas, startPosition, calculateButton);
