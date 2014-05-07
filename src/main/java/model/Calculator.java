@@ -10,7 +10,7 @@ import java.util.Random;
 public class Calculator {
     public static final int SEARCH_RANGE = 100;
     public static final double SMALLEST_RANGE = 10E-2;
-    public static final int DEFAULT_RESOLUTION = 25;
+    public static final int DEFAULT_RESOLUTION = 2000;
     private final int resolution;
     private final Function function;
 
@@ -44,7 +44,7 @@ public class Calculator {
         List<Point> points = new ArrayList<Point>(resolution * resolution);
 
 
-        for (int i = 0; i < resolution * resolution * DEFAULT_RESOLUTION; i++) {
+        for (int i = 0; i < resolution * DEFAULT_RESOLUTION; i++) {
             double currentX = xCenter + 2 * scale * (random.nextDouble() - 0.5);
             double currentY = yCenter + 2 * scale * (random.nextDouble() - 0.5);
 

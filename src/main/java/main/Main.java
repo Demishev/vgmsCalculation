@@ -21,7 +21,7 @@ import model.*;
  *  Created by Demishev on 29.04.14.
  */
 public class Main extends Application {
-    public static final int SIZE = 200;
+    public static final int SIZE = 400;
     private final SmallNumberHolder hXHolder = new SmallNumberHolder(0);
     private final SmallNumberHolder hYHolder = new SmallNumberHolder(0);
     private final SmallNumberHolder hZHolder = new SmallNumberHolder(3000);
@@ -48,7 +48,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Drawing Operations Test");
+        primaryStage.setTitle("VGMS calculation");
         Group root = new Group();
         Canvas figureCanvas = new Canvas(SIZE, SIZE);
         capturedAreaGraphicsContext = figureCanvas.getGraphicsContext2D();
@@ -208,7 +208,7 @@ public class Main extends Application {
         HBox particleRadiusBox = new HBox(new Label("b: "), bHolder);
         HBox particleVolumeBox = new HBox(new Label("Vнф: "), particleVolumeHolder);
         HBox ηBox = new HBox(new Label("η: "), ηHolder);
-        HBox liquidVelocityBox = new HBox(new Label("V0: ", liquidVelocityHolder));
+        HBox liquidVelocityBox = new HBox(new Label("V0: "), liquidVelocityHolder);
         HBox defaultZBox = new HBox(new Label("z: "), zHolder);
 
         return new VBox(magnetisationBox, extFieldBox, χBox, ballRadiusBox, particleRadiusBox, particleVolumeBox, ηBox, liquidVelocityBox, defaultZBox);
@@ -240,7 +240,7 @@ public class Main extends Application {
         }
 
         private void updateValue() {
-            setText(String.format("%.2f", value));
+            setText(String.format("%.3f", value));
         }
 
         double getValue() {
