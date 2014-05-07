@@ -8,8 +8,8 @@ import java.util.Random;
  *  Created by Demishev on 29.04.14.
  */
 public class Calculator {
-    public static final int SEARCH_RANGE = 1000;
-    public static final double SMALLEST_RANGE = 10E-5;
+    public static final int SEARCH_RANGE = 100;
+    public static final double SMALLEST_RANGE = 10E-2;
     public static final int DEFAULT_RESOLUTION = 25;
     private final int resolution;
     private final Function function;
@@ -38,11 +38,9 @@ public class Calculator {
             yCenter = (random.nextDouble() - 0.5) * SEARCH_RANGE;
         }
 
-
         while (isCapturedOnBound(scale, xCenter, yCenter, initialZ)) {
             scale *= 2;
         }
-
         List<Point> points = new ArrayList<Point>(resolution * resolution);
 
 
@@ -50,8 +48,8 @@ public class Calculator {
             double currentX = xCenter + 2 * scale * (random.nextDouble() - 0.5);
             double currentY = yCenter + 2 * scale * (random.nextDouble() - 0.5);
 
-            points.add(new Point(currentX, currentY, function.isCaptured(currentX, currentY, 0)));
-
+            final Point point = new Point(currentX, currentY, function.isCaptured(currentX, currentY, 0));
+            points.add(point);
         }
 
         return new ResultSet(points, xCenter, yCenter, scale);

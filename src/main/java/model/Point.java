@@ -38,4 +38,14 @@ public class Point {
     public double getZ() {
         return z;
     }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", isCaptured=" + isCaptured +
+                '}';
+    }
 }

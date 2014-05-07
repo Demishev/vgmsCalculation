@@ -45,7 +45,7 @@ public class ParallelFunction implements Function {
         double y = initialY;
         double z = initialZ;
 
-        final double delta = b / liquidVelocity;
+        final double delta = 0.0001;
         final double reducedC = (2 * χ * particleVolume * vectorPower(mX, mY, mZ, 2)) / (3 * η * a * b * liquidVelocity);
 
         while (!particleInBall(x, y, z) && !particleOutOfBounds(x, y, z) && z <= 0 && x != Double.NaN && y != Double.NaN && z != Double.NaN) {
@@ -63,11 +63,11 @@ public class ParallelFunction implements Function {
             double reducedVX = reducedC * reducedX / rIn5 * (reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI / (3 * rIn3) - 4 * Math.PI * 4 * zIn2 / (3 * rIn5));
             double reducedVY = reducedC * reducedY / rIn5 * (reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI / (3 * rIn3) - 4 * Math.PI * 4 * zIn2 / (3 * rIn5));
 
-            double reducedVZ = reducedC * (reducedZ / rIn5) * (3 * reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI * 4 * zIn2 / (3 * rIn5)) + 1;
+            double reducedVZ = reducedC * (reducedZ / rIn5 * (3 * reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI * 4 * zIn2 / (3 * rIn5)) + 1);
 
-            x += liquidVelocity * reducedVX * delta;
-            y += liquidVelocity * reducedVY * delta;
-            z += liquidVelocity * reducedVZ * delta;
+            x += reducedVX * delta * a;
+            y += reducedVY * delta * a;
+            z += reducedVZ * delta * a;
         }
         return particleInBall(x, y, z);
     }
@@ -83,12 +83,12 @@ public class ParallelFunction implements Function {
     }
 
     private double vectorPower(double x, double y, double z, int power) {
-        return Math.pow(x, power) * Math.pow(y, power) * Math.pow(z, power);
+        return Math.pow(x, power) + Math.pow(y, power) + Math.pow(z, power);
     }
 
 
     private boolean particleOutOfBounds(double x, double y, double z) {
-        return Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2) > 100 * Math.pow(a, 2);
+        return Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2) > Math.pow(100 * a, 2);
     }
 
     private boolean particleInBall(double x, double y, double z) {

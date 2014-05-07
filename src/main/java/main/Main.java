@@ -40,6 +40,7 @@ public class Main extends Application {
     private SmallNumberHolder mZHolder = new SmallNumberHolder(1000);
     private GraphicsContext capturedAreaGraphicsContext;
     private GraphicsContext singleParticleGraphicsContext;
+    private Label resultLabel;
 
     public static void main(String[] args) {
         launch(args);
@@ -106,10 +107,15 @@ public class Main extends Application {
     private Node displayResults(ResultSet result) {
         FlowPane flowPane = new FlowPane();
 
-        flowPane.getChildren().addAll(new Label("Center is: (" + result.getxCenter() + "," + result.getyCenter() + ")"),
-                new Label("Scale is: " + result.getScale()));
+        resultLabel = new Label();
+
+        flowPane.getChildren().addAll(resultLabel);
 
         return flowPane;
+    }
+
+    private void setResultText(ResultSet result) {
+        resultLabel.setText("Center is: (" + result.getxCenter() + "," + result.getyCenter() + ")Scale is: " + result.getScale());
     }
 
     private VBox displaySettings() {
@@ -139,9 +145,11 @@ public class Main extends Application {
                 Calculator calculator = new Calculator(20, new ParallelFunction(χ, η, a, b, mX, mY, mZ, hX, hY, hZ, particleVolume, liquidVelocity));
                 ResultSet result = calculator.calculate(zHolder.getValue());
 
-                capturedAreaGraphicsContext.restore();
+                capturedAreaGraphicsContext.setFill(Color.WHITE);
+                capturedAreaGraphicsContext.fillRect(0, 0, SIZE, SIZE);
 
                 drawFigure(result);
+                displayResults(result);
 
             } catch (Exception ignored) {
 
@@ -166,10 +174,12 @@ public class Main extends Application {
             this.capturedAreaGraphicsContext.fillOval(x, y, 1, 1);
         });
 
-        drawXScale(result);
+        setResultText(result);
+
+        drawScales(result);
     }
 
-    private void drawXScale(ResultSet result) {
+    private void drawScales(ResultSet result) {
         capturedAreaGraphicsContext.setFill(Color.BLACK);
 
         int xScaleTop = SIZE - 15;
