@@ -24,20 +24,20 @@ public class Main extends Application {
     public static final int SIZE = 200;
     private final SmallNumberHolder hXHolder = new SmallNumberHolder(0);
     private final SmallNumberHolder hYHolder = new SmallNumberHolder(0);
-    private final SmallNumberHolder hZHolder = new SmallNumberHolder(1);
-    private final SmallNumberHolder χHolder = new SmallNumberHolder(1);
-    private final SmallNumberHolder aHolder = new SmallNumberHolder(1);
-    private final SmallNumberHolder bHolder = new SmallNumberHolder(0.1);
-    private final SmallNumberHolder particleVolumeHolder = new SmallNumberHolder(0.01);
-    private final SmallNumberHolder ηHolder = new SmallNumberHolder(1);
+    private final SmallNumberHolder hZHolder = new SmallNumberHolder(3000);
+    private final SmallNumberHolder χHolder = new SmallNumberHolder(10E-4);
+    private final SmallNumberHolder aHolder = new SmallNumberHolder(0.1);
+    private final SmallNumberHolder bHolder = new SmallNumberHolder(0.02);
+    private final SmallNumberHolder particleVolumeHolder = new SmallNumberHolder(0.001);
+    private final SmallNumberHolder ηHolder = new SmallNumberHolder(0.01);
     private final SmallNumberHolder liquidVelocityHolder = new SmallNumberHolder(1);
-    private final SmallNumberHolder zHolder = new SmallNumberHolder(-8);
+    private final SmallNumberHolder zHolder = new SmallNumberHolder(-1);
     private final SmallNumberHolder particleXHolder = new SmallNumberHolder(5);
     private final SmallNumberHolder particleYHolder = new SmallNumberHolder(10);
     private final SmallNumberHolder particleZHolder = new SmallNumberHolder(-8);
-    private SmallNumberHolder mXHolder = new SmallNumberHolder(1);
-    private SmallNumberHolder mYHolder = new SmallNumberHolder(1);
-    private SmallNumberHolder mZHolder = new SmallNumberHolder(1);
+    private SmallNumberHolder mXHolder = new SmallNumberHolder(0);
+    private SmallNumberHolder mYHolder = new SmallNumberHolder(0);
+    private SmallNumberHolder mZHolder = new SmallNumberHolder(1000);
     private GraphicsContext capturedAreaGraphicsContext;
     private GraphicsContext singleParticleGraphicsContext;
 
@@ -205,23 +205,36 @@ public class Main extends Application {
     }
 
     class SmallNumberHolder extends TextField {
+        private double value;
+
         SmallNumberHolder(double defaultValue) {
-            super(String.format("%.2f", defaultValue));
+            super();
+            this.value = defaultValue;
+
+            updateValue();
 
             setMaxWidth(55);
 
             setOnKeyReleased(event -> {
                 try {
-                    Double.valueOf(getText());
-                    setStyle("-fx-background-color: beige");
+                    final Double newValue = Double.valueOf(getText());
+
+                    if (newValue != value) {
+                        this.value = newValue;
+                        setStyle("-fx-background-color: beige");
+                    }
                 } catch (NumberFormatException e) {
                     setStyle("-fx-background-color: red");
                 }
             });
         }
 
+        private void updateValue() {
+            setText(String.format("%.2f", value));
+        }
+
         double getValue() {
-            return Double.valueOf(getText());
+            return value;
         }
     }
 }
