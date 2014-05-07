@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 import model.*;
 
 /**
- * Created by Demishev on 29.04.14.
+ *  Created by Demishev on 29.04.14.
  */
 public class Main extends Application {
     public static final int SIZE = 200;
@@ -200,7 +200,6 @@ public class Main extends Application {
         HBox ηBox = new HBox(new Label("η: "), ηHolder);
         HBox liquidVelocityBox = new HBox(new Label("V0: ", liquidVelocityHolder));
         HBox defaultZBox = new HBox(new Label("z: "), zHolder);
-
 
         return new VBox(magnetisationBox, extFieldBox, χBox, ballRadiusBox, particleRadiusBox, particleVolumeBox, ηBox, liquidVelocityBox, defaultZBox);
     }

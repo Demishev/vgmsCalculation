@@ -1,7 +1,7 @@
 package model;
 
 /**
- *  Created by Demishev on 30.04.14.
+ * Created by Demishev on 30.04.14.
  */
 public class ParallelFunction implements Function {
     //Как я понимаю, случай работает тогда и только тогда, когда внешнее маг. поле направлено по z, жидкость - тоже.
@@ -47,15 +47,23 @@ public class ParallelFunction implements Function {
 
         final double delta = b / liquidVelocity;
         final double reducedC = (2 * χ * particleVolume * vectorPower(mX, mY, mZ, 2)) / (3 * η * a * b * liquidVelocity);
-        while (!particleInBall(x, y, z) && !particleOutOfBounds(x, y, z) && z <= 0 && x != Double.NaN && y != Double.NaN && z != Double.NaN) {
-            double reducedX = x / a;
-            double reducedZ = z / a;
-            double reducedR = Math.pow(x * x + y * y + z * z, 1 / 2) / a;
-            double reducedH = hZ / mZ; //TODO Не уверен совсем.
 
-            double reducedVX = reducedC * (reducedX / Math.pow(reducedR, 5)) * ((-4 * Math.PI / 3) * (4 * reducedZ * reducedZ / Math.pow(reducedR, 5) + 1 / Math.pow(reducedR, 3)) - 5 * reducedH * z * z / Math.pow(reducedR, 2) + reducedH);
-            double reducedVY = reducedC * (reducedX / Math.pow(reducedR, 5)) * ((-4 * Math.PI / 3) * (4 * reducedZ * reducedZ / Math.pow(reducedR, 5) + 1 / Math.pow(reducedR, 3)) - 5 * reducedH * z * z / Math.pow(reducedR, 2) + reducedH);
-            double reducedVZ = reducedC * (reducedZ / Math.pow(reducedR, 5)) * ((-4 * Math.PI / 3) * 4 * reducedZ * reducedZ / Math.pow(reducedR, 5) - 5 * reducedH * z * z / Math.pow(reducedR, 2) + 3 * reducedH) + 1;
+        while (!particleInBall(x, y, z) && !particleOutOfBounds(x, y, z) && z <= 0 && x != Double.NaN && y != Double.NaN && z != Double.NaN) {
+            final double reducedX = x / a;
+            final double reducedY = y / a;
+            final double reducedZ = z / a;
+            final double reducedR = Math.pow(x * x + y * y + z * z, 1 / 2) / a;
+            final double reducedH = hZ / mZ;
+
+            final double rIn2 = Math.pow(reducedR, 2);
+            final double rIn3 = Math.pow(reducedR, 3);
+            final double rIn5 = Math.pow(reducedR, 5);
+            final double zIn2 = Math.pow(reducedZ, 2);
+
+            double reducedVX = reducedC * reducedX / rIn5 * (reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI / (3 * rIn3) - 4 * Math.PI * 4 * zIn2 / (3 * rIn5));
+            double reducedVY = reducedC * reducedY / rIn5 * (reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI / (3 * rIn3) - 4 * Math.PI * 4 * zIn2 / (3 * rIn5));
+
+            double reducedVZ = reducedC * (reducedZ / rIn5) * (3 * reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI * 4 * zIn2 / (3 * rIn5)) + 1;
 
             x += liquidVelocity * reducedVX * delta;
             y += liquidVelocity * reducedVY * delta;
