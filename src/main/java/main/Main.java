@@ -1,12 +1,14 @@
 package main;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -15,7 +17,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.*;
+import model.Calculator;
+import model.Point;
+import model.ResultSet;
+import model.physicalModels.ParallelFunction;
+import model.physicalModels.RoundFunction;
 
 /**
  *  Created by Demishev on 29.04.14.
@@ -201,17 +207,16 @@ public class Main extends Application {
     }
 
     private Node systemParams() {
-        HBox magnetisationBox = new HBox(new Label("M: ("), mXHolder, new Label(","), mYHolder, new Label(","), mZHolder, new Label(")"));
-        HBox extFieldBox = new HBox(new Label("H: ("), hXHolder, new Label(","), hYHolder, new Label(","), hZHolder, new Label(")"));
-        HBox χBox = new HBox(new Label("χ: "), χHolder);
-        HBox ballRadiusBox = new HBox(new Label("a: "), aHolder);
-        HBox particleRadiusBox = new HBox(new Label("b: "), bHolder);
-        HBox particleVolumeBox = new HBox(new Label("Vнф: "), particleVolumeHolder);
-        HBox ηBox = new HBox(new Label("η: "), ηHolder);
-        HBox liquidVelocityBox = new HBox(new Label("V0: "), liquidVelocityHolder);
-        HBox defaultZBox = new HBox(new Label("z: "), zHolder);
-
-        return new VBox(magnetisationBox, extFieldBox, χBox, ballRadiusBox, particleRadiusBox, particleVolumeBox, ηBox, liquidVelocityBox, defaultZBox);
+        return new VBox(new ComboBox(FXCollections.observableArrayList("first phys model", "second phys model")),
+                new HBox(new Label("M: ("), mXHolder, new Label(","), mYHolder, new Label(","), mZHolder, new Label(")")),
+                new HBox(new Label("H: ("), hXHolder, new Label(","), hYHolder, new Label(","), hZHolder, new Label(")")),
+                new HBox(new Label("χ: "), χHolder),
+                new HBox(new Label("a: "), aHolder),
+                new HBox(new Label("b: "), bHolder),
+                new HBox(new Label("Vнф: "), particleVolumeHolder),
+                new HBox(new Label("η: "), ηHolder),
+                new HBox(new Label("V0: "), liquidVelocityHolder),
+                new HBox(new Label("z: "), zHolder));
     }
 
     class SmallNumberHolder extends TextField {

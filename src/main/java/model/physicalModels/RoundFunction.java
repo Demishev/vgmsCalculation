@@ -1,7 +1,9 @@
-package model;
+package model.physicalModels;
+
+import model.Point;
 
 /**
- *  Created by Demishev on 29.04.14.
+ * Created by Demishev on 29.04.14.
  */
 public class RoundFunction implements Function {
     private final double radius;

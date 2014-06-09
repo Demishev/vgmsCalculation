@@ -1,5 +1,6 @@
 package model;
 
+import model.physicalModels.RoundFunction;
 import org.junit.Before;
 import org.junit.Test;
 

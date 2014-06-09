@@ -1,4 +1,6 @@
-package model;
+package model.physicalModels;
+
+import model.Point;
 
 /**
  *  Created by Demishev on 29.04.14.
