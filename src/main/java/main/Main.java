@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import model.Calculator;
 import model.Point;
 import model.ResultSet;
+import model.physicalModels.Function;
 import model.physicalModels.ParallelFunction;
 import model.physicalModels.RoundFunction;
 
@@ -28,6 +29,7 @@ import model.physicalModels.RoundFunction;
  */
 public class Main extends Application {
     public static final int SIZE = 400;
+    public final ComboBox ACTIVE_MODEL_COMBO_BOX = new ComboBox(FXCollections.observableArrayList("parallel model", "round model"));
     private final SmallNumberHolder hXHolder = new SmallNumberHolder(0);
     private final SmallNumberHolder hYHolder = new SmallNumberHolder(0);
     private final SmallNumberHolder hZHolder = new SmallNumberHolder(3000);
@@ -47,6 +49,8 @@ public class Main extends Application {
     private GraphicsContext capturedAreaGraphicsContext;
     private GraphicsContext singleParticleGraphicsContext;
     private Label resultLabel;
+    private SmallNumberHolder radiusHolder = new SmallNumberHolder(10);
+    private VBox systemParamsHolder = new VBox(parallelPhysModelSystemParams());
 
     public static void main(String[] args) {
         launch(args);
@@ -131,24 +135,8 @@ public class Main extends Application {
 
         startButton.setOnMouseClicked(event -> {
             try {
-                final double χ = χHolder.getValue();
-                final double η = ηHolder.getValue();
-                final double a = aHolder.getValue();
-                final double b = bHolder.getValue();
-
-                final double mX = mXHolder.getValue();
-                final double mY = mYHolder.getValue();
-                final double mZ = mZHolder.getValue();
-
-                final double hX = hXHolder.getValue();
-                final double hY = hYHolder.getValue();
-                final double hZ = hZHolder.getValue();
-
-                final double particleVolume = particleVolumeHolder.getValue();
-                final double liquidVelocity = liquidVelocityHolder.getValue();
-
-
-                Calculator calculator = new Calculator(20, new ParallelFunction(χ, η, a, b, mX, mY, mZ, hX, hY, hZ, particleVolume, liquidVelocity));
+                final Function function = (ACTIVE_MODEL_COMBO_BOX.getValue() == "parallel model") ? getParallelFunction() : getRoundFunction();
+                Calculator calculator = new Calculator(20, function);
                 ResultSet result = calculator.calculate(zHolder.getValue());
 
                 capturedAreaGraphicsContext.setFill(Color.WHITE);
@@ -165,6 +153,30 @@ public class Main extends Application {
         vbox.getChildren().addAll(systemParams(), startButton);
 
         return vbox;
+    }
+
+    private Function getRoundFunction() {
+        return new RoundFunction(radiusHolder.getValue());
+    }
+
+    private Function getParallelFunction() {
+        final double χ = χHolder.getValue();
+        final double η = ηHolder.getValue();
+        final double a = aHolder.getValue();
+        final double b = bHolder.getValue();
+
+        final double mX = mXHolder.getValue();
+        final double mY = mYHolder.getValue();
+        final double mZ = mZHolder.getValue();
+
+        final double hX = hXHolder.getValue();
+        final double hY = hYHolder.getValue();
+        final double hZ = hZHolder.getValue();
+
+        final double particleVolume = particleVolumeHolder.getValue();
+        final double liquidVelocity = liquidVelocityHolder.getValue();
+
+        return new ParallelFunction(χ, η, a, b, mX, mY, mZ, hX, hY, hZ, particleVolume, liquidVelocity);
     }
 
     private void drawFigure(ResultSet result) {
@@ -207,7 +219,28 @@ public class Main extends Application {
     }
 
     private Node systemParams() {
-        return new VBox(new ComboBox(FXCollections.observableArrayList("first phys model", "second phys model")),
+        ACTIVE_MODEL_COMBO_BOX.setValue("parallel model");
+
+        ACTIVE_MODEL_COMBO_BOX.setOnAction(event -> {
+            systemParamsHolder.getChildren().remove(0);
+            if (ACTIVE_MODEL_COMBO_BOX.getValue() == "parallel model") {
+                systemParamsHolder.getChildren().add(parallelPhysModelSystemParams());
+            } else {
+                systemParamsHolder.getChildren().add(roundPhysModelSystemParams());
+            }
+        });
+
+        return new VBox(ACTIVE_MODEL_COMBO_BOX,
+                systemParamsHolder);
+    }
+
+
+    private Node roundPhysModelSystemParams() {
+        return new VBox(new HBox(new Label("a: "), radiusHolder));
+    }
+
+    private Node parallelPhysModelSystemParams() {
+        return new VBox(
                 new HBox(new Label("M: ("), mXHolder, new Label(","), mYHolder, new Label(","), mZHolder, new Label(")")),
                 new HBox(new Label("H: ("), hXHolder, new Label(","), hYHolder, new Label(","), hZHolder, new Label(")")),
                 new HBox(new Label("χ: "), χHolder),
@@ -216,7 +249,8 @@ public class Main extends Application {
                 new HBox(new Label("Vнф: "), particleVolumeHolder),
                 new HBox(new Label("η: "), ηHolder),
                 new HBox(new Label("V0: "), liquidVelocityHolder),
-                new HBox(new Label("z: "), zHolder));
+                new HBox(new Label("z: "), zHolder)
+        );
     }
 
     class SmallNumberHolder extends TextField {
