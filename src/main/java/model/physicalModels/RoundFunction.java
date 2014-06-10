@@ -9,6 +9,7 @@ public class RoundFunction implements Function {
     private final double radius;
     private final double xCenter;
     private final double yCenter;
+    private final double zCenter = 0;
 
     public RoundFunction(double radius) {
         this.radius = radius;
@@ -24,7 +25,7 @@ public class RoundFunction implements Function {
 
     @Override
     public boolean isCaptured(double x, double y, double z) {
-        return Math.pow(x - xCenter, 2) + Math.pow(y - yCenter, 2) < Math.pow(radius, 2);
+        return Math.pow(x - xCenter, 2) + Math.pow(y - yCenter, 2) + Math.pow(z - zCenter, 2) < Math.pow(radius, 2);
     }
 
     @Override
@@ -34,6 +35,11 @@ public class RoundFunction implements Function {
 
     @Override
     public boolean canGoOn(double x, double y, double z) {
-        return z < 0;
+        return !isCaptured(x, y, z) && z < 0;
+    }
+
+    @Override
+    public double getBallRadius() {
+        return radius;
     }
 }

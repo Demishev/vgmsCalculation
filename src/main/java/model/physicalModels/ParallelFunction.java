@@ -84,6 +84,11 @@ public class ParallelFunction implements Function {
         return false; //TODO code this!
     }
 
+    @Override
+    public double getBallRadius() {
+        return a;
+    }
+
     private double vectorPower(double x, double y, double z, int power) {
         return Math.pow(x, power) + Math.pow(y, power) + Math.pow(z, power);
     }

@@ -74,4 +74,18 @@ public class ResultSet {
     public double getMaxZ() {
         return maxZ;
     }
+
+    @Override
+    public String toString() {
+        return "ResultSet{" +
+                "points=" + points +
+                ", xCenter=" + xCenter +
+                ", yCenter=" + yCenter +
+                ", delta=" + delta +
+                ", minX=" + minX +
+                ", maxX=" + maxX +
+                ", minZ=" + minZ +
+                ", maxZ=" + maxZ +
+                '}';
+    }
 }

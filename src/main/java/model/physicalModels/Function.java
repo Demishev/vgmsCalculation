@@ -11,4 +11,6 @@ public interface Function {
     Point getNextPoint(double x, double y, double z);
 
     boolean canGoOn(double x, double y, double z);
+
+    double getBallRadius();
 }

@@ -79,7 +79,7 @@ public class Main extends Application {
 
         mainPane.setRight(paintBox);
         mainPane.setCenter(displaySettings());
-        mainPane.setBottom(displayResults(result));
+        mainPane.setBottom(displayResults());
         root.getChildren().add(mainPane);
 
         drawFigure(result);
@@ -93,28 +93,46 @@ public class Main extends Application {
         Button calculateButton = new Button("Calculate");
 
         calculateButton.setOnMouseClicked(event -> {
-            final double ballRadius = bHolder.getValue();
 
-            Calculator calculator = new Calculator(new RoundFunction(10));
+            final Function activeFunction = getActiveFunction();
+            Calculator calculator = new Calculator(activeFunction);
 
             ResultSet result = calculator.getTrajectory(particleXHolder.getValue(), particleYHolder.getValue(), particleZHolder.getValue());
+            final double ballRadius = activeFunction.getBallRadius();
 
-            final double horizontalScale = SIZE / (result.getMaxX() - result.getMinX()) / 1.5;
-            final double verticalScale = SIZE / (result.getMaxZ() - result.getMinZ()) / 1.5;
+            final double horizontalScale = SIZE / (4 * ballRadius);
+            final double verticalScale = SIZE / (4 * ballRadius);
 
-            final double horizontalDelta = -result.getMinX() * horizontalScale + 100 * 1.5;
-            final double verticalDelta = -result.getMaxZ() * verticalScale + 15 * 1.5;
+            final double horizontalDelta = 200;
+            final double verticalDelta = 50;
+
+
+            singleParticleGraphicsContext.setFill(Color.WHITE);
+            singleParticleGraphicsContext.fillRect(0, 0, SIZE, SIZE);
 
             singleParticleGraphicsContext.setFill(Color.GREEN);
-            singleParticleGraphicsContext.strokeOval(horizontalDelta, -5 * verticalScale - verticalDelta, horizontalScale * ballRadius, verticalScale * ballRadius);
+            singleParticleGraphicsContext.fillOval(horizontalDelta - ballRadius * horizontalScale, verticalDelta - ballRadius * verticalScale, horizontalScale * ballRadius * 2, verticalScale * ballRadius * 2);
 
-            System.out.println("Bla");
+            singleParticleGraphicsContext.setFill(Color.BLACK);
+            singleParticleGraphicsContext.strokeLine(0, 50, SIZE, 50);
+            singleParticleGraphicsContext.strokeLine(200, 0, 200, 400);
+
+            result.getPoints().stream().forEach(point -> {
+                System.out.println("point x,z: " + point.getX() + " " + point.getZ());
+                final double newX = horizontalScale * point.getX() + horizontalDelta;
+                final double newZ = -verticalScale * point.getZ() + verticalDelta;
+                System.out.println("point new x,z: " + newX + " " + newZ);
+                singleParticleGraphicsContext.fillRect(newX, newZ, 1, 1);
+            });
+
+            singleParticleGraphicsContext.setFill(Color.AQUA);
+            System.out.println("hor" + horizontalScale + "ver: " + verticalScale + "hor: " + horizontalDelta + "ver: " + verticalDelta);
         });
 
         return new VBox(singleParticleCanvas, startPosition, calculateButton);
     }
 
-    private Node displayResults(ResultSet result) {
+    private Node displayResults() {
         FlowPane flowPane = new FlowPane();
 
         resultLabel = new Label();
@@ -135,7 +153,7 @@ public class Main extends Application {
 
         startButton.setOnMouseClicked(event -> {
             try {
-                final Function function = (ACTIVE_MODEL_COMBO_BOX.getValue() == "parallel model") ? getParallelFunction() : getRoundFunction();
+                final Function function = getActiveFunction();
                 Calculator calculator = new Calculator(20, function);
                 ResultSet result = calculator.calculate(zHolder.getValue());
 
@@ -143,7 +161,7 @@ public class Main extends Application {
                 capturedAreaGraphicsContext.fillRect(0, 0, SIZE, SIZE);
 
                 drawFigure(result);
-                displayResults(result);
+                displayResults();
 
             } catch (Exception ignored) {
 
@@ -153,6 +171,10 @@ public class Main extends Application {
         vbox.getChildren().addAll(systemParams(), startButton);
 
         return vbox;
+    }
+
+    private Function getActiveFunction() {
+        return (ACTIVE_MODEL_COMBO_BOX.getValue() == "parallel model") ? getParallelFunction() : getRoundFunction();
     }
 
     private Function getRoundFunction() {

@@ -106,6 +106,8 @@ public class Calculator {
             }
         }
 
-        return new ResultSet(points, minX, maxX, minZ, maxZ);
+        final ResultSet result = new ResultSet(points, minX, maxX, minZ, maxZ);
+        System.out.println(result);
+        return result;
     }
 }
