@@ -47,41 +47,44 @@ public class ParallelFunction implements Function {
         double y = initialY;
         double z = initialZ;
 
-        final double delta = 0.0001;
-        final double reducedC = (2 * χ * particleVolume * vectorPower(mX, mY, mZ, 2)) / (3 * η * a * b * liquidVelocity);
+        while (canGoOn(x, y, z)) {
 
-        while (!particleInBall(x, y, z) && !particleOutOfBounds(x, y, z) && z <= 0 && x != Double.NaN && y != Double.NaN && z != Double.NaN) {
-            final double reducedX = x / a;
-            final double reducedY = y / a;
-            final double reducedZ = z / a;
-            final double reducedR = Math.pow(x * x + y * y + z * z, 1 / 2) / a;
-            final double reducedH = hZ / mZ;
+            Point nextPoint = getNextPoint(x, y, z);
 
-            final double rIn2 = Math.pow(reducedR, 2);
-            final double rIn3 = Math.pow(reducedR, 3);
-            final double rIn5 = Math.pow(reducedR, 5);
-            final double zIn2 = Math.pow(reducedZ, 2);
-
-            double reducedVX = reducedC * reducedX / rIn5 * (reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI / (3 * rIn3) - 4 * Math.PI * 4 * zIn2 / (3 * rIn5));
-            double reducedVY = reducedC * reducedY / rIn5 * (reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI / (3 * rIn3) - 4 * Math.PI * 4 * zIn2 / (3 * rIn5));
-
-            double reducedVZ = reducedC * (reducedZ / rIn5 * (3 * reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI * 4 * zIn2 / (3 * rIn5)) + 1);
-
-            x += reducedVX * delta * a;
-            y += reducedVY * delta * a;
-            z += reducedVZ * delta * a;
+            x = nextPoint.getX();
+            y = nextPoint.getY();
+            z = nextPoint.getZ();
         }
         return particleInBall(x, y, z);
     }
 
     @Override
     public Point getNextPoint(double x, double y, double z) {
-        return null; //TODO code it
+        final double delta = 0.000001;
+        final double reducedC = (2 * χ * particleVolume * vectorPower(mX, mY, mZ, 2)) / (3 * η * a * b * liquidVelocity);
+
+        final double reducedX = x / a;
+        final double reducedY = y / a;
+        final double reducedZ = z / a;
+        final double reducedR = Math.pow(x * x + y * y + z * z, 1 / 2) / a;
+        final double reducedH = hZ / mZ;
+
+        final double rIn2 = Math.pow(reducedR, 2);
+        final double rIn3 = Math.pow(reducedR, 3);
+        final double rIn5 = Math.pow(reducedR, 5);
+        final double zIn2 = Math.pow(reducedZ, 2);
+
+        double reducedVX = reducedC * reducedX / rIn5 * (reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI / (3 * rIn3) - 4 * Math.PI * 4 * zIn2 / (3 * rIn5));
+        double reducedVY = reducedC * reducedY / rIn5 * (reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI / (3 * rIn3) - 4 * Math.PI * 4 * zIn2 / (3 * rIn5));
+
+        double reducedVZ = reducedC * (reducedZ / rIn5 * (3 * reducedH - 5 * reducedH * zIn2 / rIn2 - 4 * Math.PI * 4 * zIn2 / (3 * rIn5)) + 1);
+
+        return new Point(x + reducedVX * delta * a, y + reducedVY * delta * a, z + reducedVZ * delta * a);
     }
 
     @Override
     public boolean canGoOn(double x, double y, double z) {
-        return false; //TODO code this!
+        return !particleInBall(x, y, z) && !particleOutOfBounds(x, y, z) && x != Double.NaN && y != Double.NaN && z != Double.NaN;
     }
 
     @Override
@@ -95,7 +98,7 @@ public class ParallelFunction implements Function {
 
 
     private boolean particleOutOfBounds(double x, double y, double z) {
-        return Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2) > Math.pow(100 * a, 2);
+        return Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2) > Math.pow(10 * a, 2);
     }
 
     private boolean particleInBall(double x, double y, double z) {

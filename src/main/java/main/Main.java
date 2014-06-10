@@ -40,16 +40,16 @@ public class Main extends Application {
     private final SmallNumberHolder ηHolder = new SmallNumberHolder(0.01);
     private final SmallNumberHolder liquidVelocityHolder = new SmallNumberHolder(1);
     private final SmallNumberHolder zHolder = new SmallNumberHolder(-1);
-    private final SmallNumberHolder particleXHolder = new SmallNumberHolder(5);
-    private final SmallNumberHolder particleYHolder = new SmallNumberHolder(10);
-    private final SmallNumberHolder particleZHolder = new SmallNumberHolder(-8);
+    private final SmallNumberHolder particleXHolder = new SmallNumberHolder(0.080);
+    private final SmallNumberHolder particleYHolder = new SmallNumberHolder(0.0550);
+    private final SmallNumberHolder particleZHolder = new SmallNumberHolder(-0.70);
     private SmallNumberHolder mXHolder = new SmallNumberHolder(0);
     private SmallNumberHolder mYHolder = new SmallNumberHolder(0);
     private SmallNumberHolder mZHolder = new SmallNumberHolder(1000);
     private GraphicsContext capturedAreaGraphicsContext;
     private GraphicsContext singleParticleGraphicsContext;
     private Label resultLabel;
-    private SmallNumberHolder radiusHolder = new SmallNumberHolder(10);
+    private SmallNumberHolder radiusHolder = new SmallNumberHolder(0.1);
     private VBox systemParamsHolder = new VBox(parallelPhysModelSystemParams());
 
     public static void main(String[] args) {
@@ -100,8 +100,8 @@ public class Main extends Application {
             ResultSet result = calculator.getTrajectory(particleXHolder.getValue(), particleYHolder.getValue(), particleZHolder.getValue());
             final double ballRadius = activeFunction.getBallRadius();
 
-            final double horizontalScale = SIZE / (4 * ballRadius);
-            final double verticalScale = SIZE / (4 * ballRadius);
+            final double horizontalScale = SIZE / (7 * ballRadius);
+            final double verticalScale = SIZE / (7 * ballRadius);
 
             final double horizontalDelta = 200;
             final double verticalDelta = 50;

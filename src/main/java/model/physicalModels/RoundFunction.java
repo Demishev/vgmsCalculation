@@ -25,17 +25,17 @@ public class RoundFunction implements Function {
 
     @Override
     public boolean isCaptured(double x, double y, double z) {
-        return Math.pow(x - xCenter, 2) + Math.pow(y - yCenter, 2) + Math.pow(z - zCenter, 2) < Math.pow(radius, 2);
+        return Math.pow(x - xCenter, 2) + Math.pow(y - yCenter, 2) < Math.pow(radius, 2);
     }
 
     @Override
     public Point getNextPoint(double x, double y, double z) {
-        return new Point(x * 0.99, y * 0.99, z + 0.1);
+        return new Point(x * 0.999, y * 0.999, z + 0.001);
     }
 
     @Override
     public boolean canGoOn(double x, double y, double z) {
-        return !isCaptured(x, y, z) && z < 0;
+        return !(Math.pow(x - xCenter, 2) + Math.pow(y - yCenter, 2) + Math.pow(z - zCenter, 2) < Math.pow(radius, 2)) && z < 0;
     }
 
     @Override
