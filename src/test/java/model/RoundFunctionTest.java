@@ -46,18 +46,18 @@ public class RoundFunctionTest {
 
     @Test
     public void shouldNextPointWithSameXAndYButMinusPersent() throws Exception {
-        assertEquals(99, roundFunction.getNextPoint(100, 2, 3).getX(), 0.0001);
-        assertEquals(198, roundFunction.getNextPoint(1, 200, 3).getY(), 0.0001);
+        assertEquals(99.9, roundFunction.getNextPoint(100, 2, 3).getX(), 0.0001);
+        assertEquals(199.8, roundFunction.getNextPoint(1, 200, 3).getY(), 0.0001);
     }
 
     @Test
-    public void shouldZBeMinus9_9WhenItWas10() throws Exception {
-        assertEquals(-9.9, roundFunction.getNextPoint(1, 2, -10).getZ(), 0.0001);
+    public void shouldZBeMinus9_999WhenItWas10() throws Exception {
+        assertEquals(-9.999, roundFunction.getNextPoint(1, 2, -10).getZ(), 0.0001);
     }
 
     @Test
-    public void shouldZBeMinus4_9WhenItWas5() throws Exception {
-        assertEquals(-4.9, roundFunction.getNextPoint(1, 2, -5).getZ(), 0.0001);
+    public void shouldZBeMinus4_999WhenItWas5() throws Exception {
+        assertEquals(-4.999, roundFunction.getNextPoint(1, 2, -5).getZ(), 0.0001);
     }
 
     @Test
