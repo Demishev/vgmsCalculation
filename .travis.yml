@@ -1,0 +1,8 @@
+language: java
+jdk:
+  - openjdk8
+  - oraclejdk8
+notifications:
+  email:
+    - demishev.k@gmail.com
+    - vetersup@gmail.com
